@@ -128,22 +128,15 @@ export function distance(p1:Point,p2:Point): number{
 }
 
 
-export function getArcPath(
-  c: Point,
-  r: number,
-  p1:Point,
-  p2:Point,
-  density = 100
-):Point[]  {
+export function getArcPath(c: Point,r: number,p1:Point,p2:Point,density:number=100):Point[] {
   p1 = {x: p1.x - c.x,y: p1.y - c.y}
   p2 = {x: p2.x - c.x,y: p2.y - c.y}
   let polar1: Polar = {r,t:Math.acos(p1.x/r)}
   let polar2: Polar = {r,t:Math.acos(p2.x/r)}
   let tDiff = polar2.t - polar1.t;
-  // tDiff = - tDiff;
   return new Array(density + 1).fill({}).map((_,i)=>({
-      x: (p1.x<0?1:-1)*r * Math.cos(polar1.t + (tDiff / density) * i),
-      y: (p1.y<0?-1:1)*r * Math.sin(polar1.t + (tDiff / density) * i),
+      x: (p1.x < 0 ? 1:-1) * r * Math.cos(polar1.t + (tDiff / density) * i),
+      y: (p1.y < 0 ? -1:1) * r * Math.sin(polar1.t + (tDiff / density) * i),
   }))
 }
 
@@ -161,12 +154,7 @@ export function toCart(p:Polar):Point{
   }
 }
 
-
-export function getTangentPoints(
-  origin: Point,
-  radius: number,
-  point: Point,
-): Point[]{
+export function getTangentPoints(origin: Point,radius: number,point: Point): Point[]{
   let R = radius;
   let H = distance(origin, point);
   let L = Math.sqrt(Math.pow(H, 2) - R*R);
@@ -185,13 +173,7 @@ export function getTangentPoints(
   ]
 }
 
-
-export function getExternalTangentLines(
-  c1: Point,
-  r1: number,
-  c2: Point,
-  r2: number,
-){
+export function getExternalTangentLines(c1: Point,r1: number,c2: Point,r2: number){
   const rDiff = Math.abs((r1-r2))
   const d = distance(c1,c2);
   let alpha = Math.atan(rDiff/d)
@@ -220,12 +202,7 @@ export function getExternalTangentLines(
   }
 }
 
-export function getInternalTangentLines(
-  c1: Point,
-  r1: number,
-  c2: Point,
-  r2: number,
-){
+export function getInternalTangentLines(c1: Point,r1: number,c2: Point,r2: number){
   const d = distance(c1,c2);
   let alpha = Math.acos((r1 + r2)/d)
   let beta = Math.acos((c2.x - c1.x)/d);
@@ -246,48 +223,7 @@ export function getInternalTangentLines(
   }
 }
 
-
-// APPEARS TO WORK
-export function getInternalTangentLines_(
-  c1: Point,
-  c2: Point,
-  r1: number,
-  r2: number,
-){
-  let d = distance(c1,c2);
-  let rSum = (r1 + r2);
-  let h = Math.sqrt(d*d - rSum*rSum);
-  let theta = Math.acos(((rSum*rSum)+(d*d)-(h*h))/(2*rSum*d))
-  let m = (c2.y-c1.y)/(c2.x-c1.x)
-  if(c1.x === c2.x){
-    m = -Math.PI/4
-  }
-  let offset = Math.atan(m)
-  if(c1.x > c2.x){
-    offset -= Math.PI
-  }
-  let ixt1 = c1.x + r1 * Math.cos(theta - offset);
-  let iyt1 = c1.y - r1 * Math.sin(theta - offset);
-  let ixt2 = c2.x - r2 * Math.cos(theta - offset);
-  let iyt2 = c2.y + r2 * Math.sin(theta - offset);
-  let ixb1 = c1.x + r1 * Math.cos(theta + offset);
-  let iyb1 = c1.y + r1 * Math.sin(theta + offset);
-  let ixb2 = c2.x - r2 * Math.cos(theta + offset);
-  let iyb2 = c2.y - r2 * Math.sin(theta + offset);
-  return {
-    top:[{x:ixt1,y:iyt1},{x:ixt2,y:iyt2}],
-    bottom:[{x:ixb1,y:iyb1},{x:ixb2,y:iyb2}],
-  }
-}
-
-
-export function getLineBetween(
-  c1: Point,
-  c2: Point,
-  r1: number,
-  r2: number,
-){
-
+export function getLineBetween(c1: Point,c2: Point,r1: number,r2: number){
   let m = (c2.y-c1.y)/(c2.x-c1.x);
   let yInt = c1.y - m * c1.x;
   let line = (x) => m * x + yInt;
