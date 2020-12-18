@@ -1,4 +1,4 @@
-import { Circle, Point, Polar } from "./models";
+import { Point, Polar } from "./models";
 
 export function getRadialVertices(
     origin: Point, 
