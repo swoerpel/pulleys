@@ -1,3 +1,4 @@
+import { color } from 'chroma.ts';
 import * as p5 from 'p5'
 import { Graphics } from 'p5';
 import { setupColorMachine } from './colors';
@@ -14,7 +15,7 @@ var sketch = function (p: p5) {
   p.setup = function () {
     setupGraphic();
     resetGraphic();
-    colorMachine = setupColorMachine('Spectral')
+    colorMachine = setupColorMachine('RdBu')
     setupPulleySystem();
   }
 
@@ -24,33 +25,56 @@ var sketch = function (p: p5) {
       graphic,
       colorMachine,
     );
-    let r1 = 0.08;
-    let r2 = 0.2
+    let r1 = 0.15;
+    let r2 = 0.04
+    let r3 = 0.08
     let startPoint = {x:0,y:0};
     let endPoint = {x:1,y:1};
     let origins = [
-      {x:0.25,y:0.5},
-      {x:0.5,y:0.5},
-      {x:0.75,y:0.25},
-      {x:0.85,y:0.85}
+      {x: 0.25, y: Math.random() * (1 - r1*2) +  r1},
+      {x: 0.5, y: Math.random() * (1 - r1*2) + r1},
+      {x: 0.75, y: Math.random() * (1 - r1*2) + r1},
     ]
-    let radii = [r2,r1,r2,r1,r1];
+    // let origins = generateGrid()
 
-    let fills = ['white']
-    let pulleyGroup: Pulley[] = generatePulleyParameters(origins,radii,fills);
-    pulleySystem.drawPulleyGroup(pulleyGroup)
+    let radii = [r1];
 
-    let configuration = new Array(Math.floor(Math.random()*4)).fill(0).map((_)=>Math.floor(Math.random()*4))
-    console.log("configuration",configuration)
-    pulleySystem.drawConnections(configuration,startPoint,endPoint,pulleyGroup)
+    let pulleyStackSize = 3;
+    for(let i = 0; i < pulleyStackSize; i++){
+      if(i !== 0){
+        radii = radii.map(r=>r*0.6)
+      }
+      console.log("radii",radii)
+      let fills = new Array(pulleyStackSize).fill('').map((_,j)=>{
+        let cv = (i * origins.length + j) / ((pulleyStackSize - 1) * origins.length);
+        // let cv = Math.random()
+        return colorMachine(cv).hex()
+      })
+      console.log("fills",fills)
+      let pulleyGroup: Pulley[] = generatePulleyParameters(origins,radii,fills);
+      pulleySystem.drawPulleyGroup(pulleyGroup)
+  
+      let configuration = new Array(1).fill(0).map((_)=>Math.floor(Math.random()*4))
+      console.log("configuration",configuration)
+      pulleySystem.drawConnections(configuration,startPoint,endPoint,pulleyGroup)
+  
+    }
 
-    radii = radii.map(r=>r/2);
-    fills = ['gold']
-    pulleyGroup = generatePulleyParameters(origins,radii,fills);
-    pulleySystem.drawPulleyGroup(pulleyGroup)
+    // let fills = ['white']
+    // let pulleyGroup: Pulley[] = generatePulleyParameters(origins,radii,fills);
+    // pulleySystem.drawPulleyGroup(pulleyGroup)
 
-    // configuration = [1]
-    pulleySystem.drawConnections(configuration,startPoint,endPoint,pulleyGroup)
+    // let configuration = new Array(Math.floor(Math.random()*4)).fill(0).map((_)=>Math.floor(Math.random()*4))
+    // console.log("configuration",configuration)
+    // pulleySystem.drawConnections(configuration,startPoint,endPoint,pulleyGroup)
+
+    // radii = radii.map(r=>r/2);
+    // fills = ['gold']
+    // pulleyGroup = generatePulleyParameters(origins,radii,fills);
+    // pulleySystem.drawPulleyGroup(pulleyGroup)
+
+    // // configuration = [1]
+    // pulleySystem.drawConnections(configuration,startPoint,endPoint,pulleyGroup)
   }
 
   

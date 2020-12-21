@@ -20,7 +20,7 @@ export class PulleySystem {
             origin: this.toCanvasPoint(p.origin),
             radius: p.radius * this.canvas.height
         }));
-        this.graphic.stroke('orange');
+        this.graphic.stroke('black');
         this.graphic.strokeWeight(this.canvas.height * 0.004);
         this.graphic.noFill();
         pulleyGroup.unshift({origin:start,radius:0,fill:'black'})
