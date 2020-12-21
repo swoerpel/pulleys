@@ -12,51 +12,61 @@ export class PulleySystem {
 
     }
 
-    public drawConnections(pulleyGroup: Pulley[]) : void{
+    public drawConnections(start:Point,end:Point,pulleyGroup: Pulley[]){
+        start = this.toCanvasPoint(start);
+        end = this.toCanvasPoint(end);
         pulleyGroup = pulleyGroup.map((p: Pulley)=>({
             ...p,
             origin: this.toCanvasPoint(p.origin),
             radius: p.radius * this.canvas.height
         }));
         this.graphic.stroke('orange');
-        this.graphic.strokeWeight(this.canvas.height * 0.005);
+        this.graphic.strokeWeight(this.canvas.height * 0.004);
         this.graphic.noFill();
-        let p1 = pulleyGroup.shift();
-        pulleyGroup.forEach((p: Pulley)=>{
-            let externalTangentLines = getExternalTangentLines(
-                p.origin,
-                p.radius,
-                p1.origin,
-                p1.radius
-            )
-            this.graphic.beginShape()
-            externalTangentLines.A.forEach((p)=>this.graphic.vertex(p.x,p.y))
-            this.graphic.endShape();
-            this.graphic.beginShape()
-            externalTangentLines.B.forEach((p)=>this.graphic.vertex(p.x,p.y))
-            this.graphic.endShape();
-        })
-        pulleyGroup.forEach((p: Pulley)=>{
-            let internalTangentLines = getInternalTangentLines(
-                p1.origin,
-                p1.radius,
-                p.origin,
-                p.radius,
-            )
-            this.graphic.beginShape()
-            internalTangentLines.A.forEach((p)=>this.graphic.vertex(p.x,p.y))
-            this.graphic.endShape();
-            this.graphic.beginShape()
-            internalTangentLines.B.forEach((p)=>this.graphic.vertex(p.x,p.y))
-            this.graphic.endShape();
-        })
+        pulleyGroup.unshift({origin:start,radius:0,fill:'black'})
+        pulleyGroup.push({origin:end,radius:0,fill:'black'})
+        pulleyGroup.map((p: Pulley,i: number)=>{
+            if(i !== pulleyGroup.length - 1){
+                let nextPulley: Pulley = pulleyGroup[i +1 ]
+                let c1 =p.origin
+                let r1 =p.radius
+                let c2 =nextPulley.origin
+                let r2 =nextPulley.radius
+                let externalTangentLines = getExternalTangentLines(c1,r1,c2,r2);
+                let internalTangentLines = getInternalTangentLines(c1,r1,c2,r2);
 
+                let x1 = internalTangentLines.A[0].x;
+                let y1 = internalTangentLines.A[0].y;
+                let x2 = internalTangentLines.A[1].x;
+                let y2 = internalTangentLines.A[1].y;
+                this.graphic.line(x1,y1,x2,y2)
+
+                x1 = internalTangentLines.B[0].x;
+                y1 = internalTangentLines.B[0].y;
+                x2 = internalTangentLines.B[1].x;
+                y2 = internalTangentLines.B[1].y;
+                this.graphic.line(x1,y1,x2,y2)
+
+                x1 = externalTangentLines.A[0].x;
+                y1 = externalTangentLines.A[0].y;
+                x2 = externalTangentLines.A[1].x;
+                y2 = externalTangentLines.A[1].y;
+                this.graphic.line(x1,y1,x2,y2)
+
+                x1 = externalTangentLines.B[0].x;
+                y1 = externalTangentLines.B[0].y;
+                x2 = externalTangentLines.B[1].x;
+                y2 = externalTangentLines.B[1].y;
+                this.graphic.line(x1,y1,x2,y2)
+            }
+        })
     }
-
+   
     public drawPulleyGroup(pulleyGroup: Pulley[]): void{
         pulleyGroup = pulleyGroup.map((p)=>this.mapGeometryToCanvas(p,this.canvas));
         this.graphic.strokeWeight(0);
-        pulleyGroup.forEach((p:Pulley)=>{
+        pulleyGroup.forEach((p:Pulley,i:number)=>{
+            // this.graphic.fill(this.colorMachine(i/pulleyGroup.length).hex())
             this.graphic.fill(p.fill);
             this.graphic.circle(p.origin.x,p.origin.y,p.radius*2);
         });

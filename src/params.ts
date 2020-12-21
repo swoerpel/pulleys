@@ -8,7 +8,7 @@ export const params = {
         frameRate: 30,
     },
     canvas:{
-        width: len,
+        width: len*2,
         height: len,
     },
     border:{

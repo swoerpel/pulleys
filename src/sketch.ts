@@ -23,24 +23,29 @@ var sketch = function (p: p5) {
       graphic,
       colorMachine,
     );
-
     let r1 = 0.08;
-    let r2 = 0.1
+    let r2 = 0.2
+    let startPoint = {x:0,y:0};
+    let endPoint = {x:1,y:1};
     let pulleyGroup = [
       {
-        origin: {x:0.5,y:0.5},
-        radius: 0.05,
+        origin: {x:0.25,y:0.5},
+        radius: r1,
         fill: 'black'
       },
-      // NSEW
       {
-        origin: {x:0.5,y:0.2},
+        origin: {x:0.5,y:0.5},
+        radius: r2,
+        fill: 'black'
+      },
+      {
+        origin: {x:0.75,y:0.5},
         radius: r1,
         fill: 'black'
       },
     ]
     pulleySystem.drawPulleyGroup(pulleyGroup)
-    pulleySystem.drawConnections(pulleyGroup)
+    pulleySystem.drawConnections(startPoint,endPoint,pulleyGroup)
   }
 
   p.draw = function () {

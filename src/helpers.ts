@@ -173,7 +173,18 @@ export function getTangentPoints(origin: Point,radius: number,point: Point): Poi
   ]
 }
 
-export function getExternalTangentLines(c1: Point,r1: number,c2: Point,r2: number){
+export function getExternalTangentLines(
+  c1,
+  r1,
+  c2,
+  r2
+){
+// export function getExternalTangentLines(
+//   c1: Point,
+//   r1: number,
+//   c2: Point,
+//   r2: number
+// ){
   const rDiff = Math.abs((r1-r2))
   const d = distance(c1,c2);
   let alpha = Math.atan(rDiff/d)
