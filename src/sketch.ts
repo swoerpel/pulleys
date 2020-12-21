@@ -1,6 +1,7 @@
 import * as p5 from 'p5'
 import { Graphics } from 'p5';
 import { setupColorMachine } from './colors';
+import { Point, Pulley } from './models';
 import { params } from './params';
 import { PulleySystem } from './pulley-system';
 
@@ -27,25 +28,42 @@ var sketch = function (p: p5) {
     let r2 = 0.2
     let startPoint = {x:0,y:0};
     let endPoint = {x:1,y:1};
-    let pulleyGroup = [
-      {
-        origin: {x:0.25,y:0.5},
-        radius: r1,
-        fill: 'black'
-      },
-      {
-        origin: {x:0.5,y:0.5},
-        radius: r2,
-        fill: 'black'
-      },
-      {
-        origin: {x:0.75,y:0.5},
-        radius: r1,
-        fill: 'black'
-      },
+    let origins = [
+      {x:0.25,y:0.5},
+      {x:0.5,y:0.5},
+      {x:0.75,y:0.25},
+      {x:0.85,y:0.85}
     ]
+    let radii = [r2,r1,r2,r1,r1];
+
+    let fills = ['white']
+    let pulleyGroup: Pulley[] = generatePulleyParameters(origins,radii,fills);
     pulleySystem.drawPulleyGroup(pulleyGroup)
-    pulleySystem.drawConnections(startPoint,endPoint,pulleyGroup)
+
+    let configuration = new Array(Math.floor(Math.random()*4)).fill(0).map((_)=>Math.floor(Math.random()*4))
+    console.log("configuration",configuration)
+    pulleySystem.drawConnections(configuration,startPoint,endPoint,pulleyGroup)
+
+    radii = radii.map(r=>r/2);
+    fills = ['gold']
+    pulleyGroup = generatePulleyParameters(origins,radii,fills);
+    pulleySystem.drawPulleyGroup(pulleyGroup)
+
+    // configuration = [1]
+    pulleySystem.drawConnections(configuration,startPoint,endPoint,pulleyGroup)
+  }
+
+  
+  function generatePulleyParameters(
+    origins: Point[],
+    radii: number[],
+    fills: string[],
+  ): Pulley[]{
+      return origins.map((origin:Point,i:number)=>({
+        origin,
+        radius: radii[i % radii.length],
+        fill: fills[i % fills.length]
+      }))
   }
 
   p.draw = function () {

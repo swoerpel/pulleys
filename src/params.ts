@@ -17,7 +17,7 @@ export const params = {
     },
 
     color:{
-        background: 'lightblue',
+        background: 'black',
     },
 
 }

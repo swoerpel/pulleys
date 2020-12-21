@@ -12,7 +12,7 @@ export class PulleySystem {
 
     }
 
-    public drawConnections(start:Point,end:Point,pulleyGroup: Pulley[]){
+    public drawConnections(config: number[],start:Point,end:Point,pulleyGroup: Pulley[]){
         start = this.toCanvasPoint(start);
         end = this.toCanvasPoint(end);
         pulleyGroup = pulleyGroup.map((p: Pulley)=>({
@@ -35,29 +35,32 @@ export class PulleySystem {
                 let externalTangentLines = getExternalTangentLines(c1,r1,c2,r2);
                 let internalTangentLines = getInternalTangentLines(c1,r1,c2,r2);
 
-                let x1 = internalTangentLines.A[0].x;
-                let y1 = internalTangentLines.A[0].y;
-                let x2 = internalTangentLines.A[1].x;
-                let y2 = internalTangentLines.A[1].y;
-                this.graphic.line(x1,y1,x2,y2)
+                let allTangentLines = [
+                    [
+                        internalTangentLines.A[0].x,
+                        internalTangentLines.A[0].y,
+                        internalTangentLines.A[1].x,
+                        internalTangentLines.A[1].y,
+                    ],[
+                        internalTangentLines.B[0].x,
+                        internalTangentLines.B[0].y,
+                        internalTangentLines.B[1].x,
+                        internalTangentLines.B[1].y,
+                    ],[
+                        externalTangentLines.A[0].x,
+                        externalTangentLines.A[0].y,
+                        externalTangentLines.A[1].x,
+                        externalTangentLines.A[1].y,
+                    ],[
+                        externalTangentLines.B[0].x,
+                        externalTangentLines.B[0].y,
+                        externalTangentLines.B[1].x,
+                        externalTangentLines.B[1].y,
+                    ]
+                ]
+                let line = allTangentLines[config[i%config.length]]
+                this.graphic.line(...line)
 
-                x1 = internalTangentLines.B[0].x;
-                y1 = internalTangentLines.B[0].y;
-                x2 = internalTangentLines.B[1].x;
-                y2 = internalTangentLines.B[1].y;
-                this.graphic.line(x1,y1,x2,y2)
-
-                x1 = externalTangentLines.A[0].x;
-                y1 = externalTangentLines.A[0].y;
-                x2 = externalTangentLines.A[1].x;
-                y2 = externalTangentLines.A[1].y;
-                this.graphic.line(x1,y1,x2,y2)
-
-                x1 = externalTangentLines.B[0].x;
-                y1 = externalTangentLines.B[0].y;
-                x2 = externalTangentLines.B[1].x;
-                y2 = externalTangentLines.B[1].y;
-                this.graphic.line(x1,y1,x2,y2)
             }
         })
     }
